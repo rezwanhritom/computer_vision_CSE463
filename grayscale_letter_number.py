@@ -1,6 +1,7 @@
 # Create your own grayscale letters and numbers!
 # Use a numpy array to create a grayscale image of this code. 
 
+import numpy as np
 import matplotlib.pyplot as plt
 
 Letter_H = np.array([
