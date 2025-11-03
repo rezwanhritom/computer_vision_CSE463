@@ -1,5 +1,5 @@
 # Choose a specific subject (eg. cat, dog, horse, tree, car, etc) and collect 10 random images from the internet (Dataset1).
-# Perform 5 different transformations
+# Perform different transformations
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -16,6 +16,9 @@ for i in range(1, 11):
 for filename in image_files:
     image_path = os.path.join(source_dir, filename)
     image = cv2.imread(image_path)
+
+# Crop
+    cropped_image = image[100:243, 100:277]
 
 # Flip
     flipped = cv2.flip(image, 0)
@@ -41,26 +44,36 @@ for filename in image_files:
 # Shear
     shear_x = 0.5
     shear_y = 0.0
-    shear_matrix = np.float32([
-        [1, shear_x, 0],
-        [shear_y, 1, 0]
-    ])
+    shear_matrix = np.float32([[1, shear_x, 0],
+                                [shear_y, 1, 0]])
     sheared_image = cv2.warpAffine(image, shear_matrix, (width + int(shear_x * height), height))
+
+# Stretch
+    height, width = image.shape[:2]
+    stretch_x = 2
+    stretch_y = 1.0
+    stretch_matrix = np.float32([
+                                [stretch_x, 0, 0],
+                                [0, stretch_y, 0]])
+    stretched_image = cv2.warpAffine(image, stretch_matrix, (int(width * stretch_x), int(height * stretch_y)))
+
 
     images = [
         image[..., ::-1],
+        cropped_image[..., ::-1],
         flipped[..., ::-1],
         rotated[..., ::-1],
         resized_image[..., ::-1],
         translated_image[..., ::-1],
-        sheared_image[..., ::-1]
+        sheared_image[..., ::-1],
+        stretched_image[..., ::-1],
         ]
 
-    titles = ['Original', 'Flipped', 'Rotated', 'Resized', 'Translated', 'Sheared']
+    titles = ['Original', 'Cropped', 'Flipped', 'Rotated', 'Resized', 'Translated', 'Sheared', 'Stretched']
 
-    plt.figure(figsize=(15, 5))
-    for i in range(6):
-        plt.subplot(1, 6, i + 1)
+    plt.figure(figsize=(25, 5))
+    for i in range(8):
+        plt.subplot(1, 8, i + 1)
         plt.imshow(images[i])
         plt.title(titles[i])
 
